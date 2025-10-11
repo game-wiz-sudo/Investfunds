@@ -737,6 +737,294 @@ setInterval(()=>{
 }, 15000);
 
 </script>
+    
+    <!-- ====== AI Chat Support (InvestFunds - Upgraded) ====== -->
+
+<style>
+
+/* Chat Toggle Button */
+
+#ai-chat-toggle {
+
+  position: fixed; right: 20px; bottom: 20px;
+
+  background: linear-gradient(135deg,#0088cc,#00b3ff);
+
+  color: #fff; width: 64px; height: 64px;
+
+  border-radius: 50%; border: none;
+
+  font-size: 28px; cursor: pointer;
+
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+
+  z-index: 9999; transition: transform .2s, box-shadow .2s;
+
+}
+
+#ai-chat-toggle:hover {
+
+  transform: scale(1.05);
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+
+}
+
+/* Chat Box */
+
+#ai-chat-box {
+
+  position: fixed; right: 20px; bottom: 95px;
+
+  width: 320px; height: 420px;
+
+  background: rgba(255,255,255,0.95);
+
+  backdrop-filter: blur(12px);
+
+  border-radius: 18px; box-shadow: 0 0 25px rgba(0,0,0,0.25);
+
+  display: none; flex-direction: column;
+
+  overflow: hidden; z-index: 9998;
+
+  font-family: "Segoe UI", Arial, sans-serif;
+
+}
+
+/* Header */
+
+#ai-chat-header {
+
+  background: linear-gradient(135deg,#0088cc,#00aaff);
+
+  color: #fff; padding: 12px; text-align: center;
+
+  font-weight: bold; letter-spacing: 0.5px;
+
+  display: flex; justify-content: space-between; align-items: center;
+
+}
+
+#ai-chat-header span { font-size: 13px; opacity: 0.9; }
+
+/* Messages */
+
+#ai-chat-messages {
+
+  flex: 1; padding: 10px; overflow-y: auto;
+
+  background: #f4f8fb; scroll-behavior: smooth;
+
+}
+
+.ai-msg {
+
+  margin: 8px 0; padding: 9px 12px;
+
+  border-radius: 14px; max-width: 80%;
+
+  animation: fadeIn .3s ease;
+
+}
+
+.user-msg { background: #0088cc; color: #fff; margin-left: auto; }
+
+.bot-msg { background: #e9f6ff; color: #000; }
+
+/* Typing Indicator */
+
+#typing-indicator {
+
+  display: none; font-size: 12px; color: #666;
+
+  font-style: italic; margin: 5px;
+
+}
+
+/* Input Area */
+
+#ai-chat-input {
+
+  display: flex; border-top: 1px solid #ddd; background: #fff;
+
+}
+
+#ai-chat-input input {
+
+  flex: 1; border: none; padding: 10px;
+
+  outline: none; font-size: 14px;
+
+}
+
+#ai-chat-input button {
+
+  background: #0088cc; color: #fff;
+
+  border: none; padding: 10px 15px;
+
+  cursor: pointer; transition: background .2s;
+
+}
+
+#ai-chat-input button:hover { background: #0077b3; }
+
+/* Animations */
+
+@keyframes fadeIn {
+
+  from { opacity: 0; transform: translateY(10px); }
+
+  to { opacity: 1; transform: translateY(0); }
+
+}
+
+</style>
+
+<button id="ai-chat-toggle">💬</button>
+
+<div id="ai-chat-box">
+
+  <div id="ai-chat-header">
+
+    InvestFunds Support
+
+    <span>Online 💡</span>
+
+  </div>
+
+  <div id="ai-chat-messages"></div>
+
+  <div id="typing-indicator">InvestFunds is typing...</div>
+
+  <div id="ai-chat-input">
+
+    <input type="text" id="ai-user-input" placeholder="Type a message..." />
+
+    <button id="ai-send-btn">➤</button>
+
+  </div>
+
+</div>
+
+<script>
+
+const toggle=document.getElementById("ai-chat-toggle");
+
+const box=document.getElementById("ai-chat-box");
+
+const messages=document.getElementById("ai-chat-messages");
+
+const input=document.getElementById("ai-user-input");
+
+const send=document.getElementById("ai-send-btn");
+
+const typing=document.getElementById("typing-indicator");
+
+// Sound effect
+
+const sound=new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_34a2b8a2e2.mp3?filename=notification-3-102455.mp3");
+
+toggle.onclick=()=>box.style.display=box.style.display==="flex"?"none":"flex";
+
+function addMessage(text,cls){
+
+  const div=document.createElement("div");
+
+  div.className="ai-msg "+cls;
+
+  div.textContent=text;
+
+  messages.appendChild(div);
+
+  messages.scrollTop=messages.scrollHeight;
+
+  if(cls==="bot-msg") sound.play().catch(()=>{});
+
+}
+
+function botReply(user){
+
+  const msg=user.toLowerCase();
+
+  let reply="I'm here to assist with any InvestFunds inquiries.";
+
+  if(msg.includes("hello")||msg.includes("hi"))
+
+    reply="Hello 👋 Welcome to InvestFunds! How can I help you today?";
+
+  else if(msg.includes("invest"))
+
+    reply="To invest, log in to your dashboard and choose a plan that suits you.";
+
+  else if(msg.includes("withdraw"))
+
+    reply="Withdrawals are processed within 24 hours after approval.";
+
+  else if(msg.includes("register")||msg.includes("signup"))
+
+    reply="Visit the Register page, fill your details, and verify your account.";
+
+  else if(msg.includes("deposit"))
+
+    reply="You can make deposits through your dashboard using supported payment methods.";
+
+  else if(msg.includes("legit")||msg.includes("real"))
+
+    reply="InvestFunds is a trusted platform focused on transparency and reliability ✅";
+
+  else if(msg.includes("plan"))
+
+    reply="We offer flexible investment plans for beginners and professionals. Check 'Our Plans' on the site.";
+
+  else if(msg.includes("support")||msg.includes("help"))
+
+    reply="You can reach support anytime through this chat or our contact email 📩";
+
+  else if(msg.includes("thank"))
+
+    reply="You're welcome! 😊 We're always here to assist you.";
+
+  else if(msg.includes("problem")||msg.includes("error"))
+
+    reply="Please describe the issue in detail so we can help you better.";
+
+  typing.style.display="block";
+
+  setTimeout(()=>{
+
+    typing.style.display="none";
+
+    addMessage(reply,"bot-msg");
+
+  },1000+Math.random()*1000);
+
+}
+
+send.onclick=()=>{
+
+  const val=input.value.trim();
+
+  if(!val) return;
+
+  addMessage(val,"user-msg");
+
+  input.value="";
+
+  setTimeout(()=>botReply(val),600);
+
+};
+
+input.addEventListener("keypress",e=>{
+
+  if(e.key==="Enter") send.click();
+
+});
+
+</script>
+
+<!-- ====== /AI Chat Support (Upgraded) ====== -->
 
 </body>
 
