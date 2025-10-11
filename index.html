@@ -738,95 +738,39 @@ setInterval(()=>{
 
 </script>
     
-    <!-- ====== AI Chat Support (InvestFunds - Upgraded) ====== -->
+    <!-- ====== AI Chat Support (InvestFunds - Smart Memory + WhatsApp Fallback + Auto Greeting + Clear + Undo + Fade) ====== -->
 
 <style>
 
 /* Chat Toggle Button */
 
-#ai-chat-toggle {
+#ai-chat-toggle { position: fixed; right: 20px; bottom: 20px; background: linear-gradient(135deg,#0088cc,#00b3ff); color: #fff; width: 64px; height: 64px; border-radius: 50%; border: none; font-size: 28px; cursor: grab; box-shadow: 0 6px 15px rgba(0,0,0,0.25); z-index: 9999; transition: transform .2s, box-shadow .2s, opacity .3s; user-select: none; animation: float 4s ease-in-out infinite, pulse 3s ease-in-out infinite; }
 
-  position: fixed; right: 20px; bottom: 20px;
+#ai-chat-toggle:hover { transform: scale(1.08); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
 
-  background: linear-gradient(135deg,#0088cc,#00b3ff);
+#ai-chat-toggle:active { cursor: grabbing; }
 
-  color: #fff; width: 64px; height: 64px;
+@keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
 
-  border-radius: 50%; border: none;
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 rgba(0,136,204,0);} 50%{box-shadow:0 0 20px rgba(0,136,204,0.6);} }
 
-  font-size: 28px; cursor: pointer;
-
-  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-
-  z-index: 9999; transition: transform .2s, box-shadow .2s;
-
-}
-
-#ai-chat-toggle:hover {
-
-  transform: scale(1.05);
-
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-
-}
+#ai-unread-badge { position: absolute; top: 10px; right: 10px; background: #ff3b3b; color: #fff; font-size: 12px; font-weight: bold; width: 20px; height: 20px; border-radius: 50%; display: none; justify-content: center; align-items: center; box-shadow: 0 0 6px rgba(0,0,0,0.3); }
 
 /* Chat Box */
 
-#ai-chat-box {
-
-  position: fixed; right: 20px; bottom: 95px;
-
-  width: 320px; height: 420px;
-
-  background: rgba(255,255,255,0.95);
-
-  backdrop-filter: blur(12px);
-
-  border-radius: 18px; box-shadow: 0 0 25px rgba(0,0,0,0.25);
-
-  display: none; flex-direction: column;
-
-  overflow: hidden; z-index: 9998;
-
-  font-family: "Segoe UI", Arial, sans-serif;
-
-}
+#ai-chat-box { position: fixed; right: 20px; bottom: 95px; width: 320px; height: 420px; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-radius: 18px; box-shadow: 0 0 25px rgba(0,0,0,0.25); display: none; flex-direction: column; overflow: hidden; z-index: 9998; font-family: "Segoe UI", Arial, sans-serif; }
 
 /* Header */
 
-#ai-chat-header {
-
-  background: linear-gradient(135deg,#0088cc,#00aaff);
-
-  color: #fff; padding: 12px; text-align: center;
-
-  font-weight: bold; letter-spacing: 0.5px;
-
-  display: flex; justify-content: space-between; align-items: center;
-
-}
+#ai-chat-header { background: linear-gradient(135deg,#0088cc,#00aaff); color: #fff; padding: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; letter-spacing: 0.5px; }
 
 #ai-chat-header span { font-size: 13px; opacity: 0.9; }
 
 /* Messages */
 
-#ai-chat-messages {
+#ai-chat-messages { flex: 1; padding: 10px; overflow-y: auto; background: #f4f8fb; scroll-behavior: smooth; }
 
-  flex: 1; padding: 10px; overflow-y: auto;
-
-  background: #f4f8fb; scroll-behavior: smooth;
-
-}
-
-.ai-msg {
-
-  margin: 8px 0; padding: 9px 12px;
-
-  border-radius: 14px; max-width: 80%;
-
-  animation: fadeIn .3s ease;
-
-}
+.ai-msg { margin: 8px 0; padding: 9px 12px; border-radius: 14px; max-width: 80%; animation: fadeIn .3s ease; opacity: 1; transition: opacity .3s ease; }
 
 .user-msg { background: #0088cc; color: #fff; margin-left: auto; }
 
@@ -834,65 +778,55 @@ setInterval(()=>{
 
 /* Typing Indicator */
 
-#typing-indicator {
-
-  display: none; font-size: 12px; color: #666;
-
-  font-style: italic; margin: 5px;
-
-}
+#typing-indicator { display: none; font-size: 12px; color: #666; font-style: italic; margin: 5px; }
 
 /* Input Area */
 
-#ai-chat-input {
+#ai-chat-input { display: flex; border-top: 1px solid #ddd; background: #fff; align-items: center; }
 
-  display: flex; border-top: 1px solid #ddd; background: #fff;
+#ai-chat-input input { flex: 1; border: none; padding: 10px; outline: none; font-size: 14px; }
 
-}
-
-#ai-chat-input input {
-
-  flex: 1; border: none; padding: 10px;
-
-  outline: none; font-size: 14px;
-
-}
-
-#ai-chat-input button {
-
-  background: #0088cc; color: #fff;
-
-  border: none; padding: 10px 15px;
-
-  cursor: pointer; transition: background .2s;
-
-}
+#ai-chat-input button { background: #0088cc; color: #fff; border: none; padding: 10px 15px; cursor: pointer; transition: background .2s; border-radius:8px; margin-left:4px; }
 
 #ai-chat-input button:hover { background: #0077b3; }
 
-/* Animations */
+/* Clear & Undo Buttons */
 
-@keyframes fadeIn {
+#ai-clear-btn { background:#ff4d4d; color:#fff; font-size:13px; border-radius:6px; padding:6px 8px; border:none; cursor:pointer; }
 
-  from { opacity: 0; transform: translateY(10px); }
+#ai-clear-btn:hover { background:#e60000; }
 
-  to { opacity: 1; transform: translateY(0); }
+#ai-undo-btn { background:#00cc66; color:#fff; font-size:13px; border-radius:6px; padding:6px 8px; border:none; cursor:pointer; display:none; margin-left:4px; }
+
+#ai-undo-btn:hover { background:#00994d; }
+
+/* Dark Mode */
+
+@media (prefers-color-scheme: dark) {
+
+  #ai-chat-box { background: rgba(30,30,30,0.95); }
+
+  #ai-chat-messages { background: #1f1f1f; color: #fff; }
+
+  .bot-msg { background: #333; color: #fff; }
+
+  .user-msg { background: #00aaff; }
+
+  #ai-clear-btn { background:#cc0000; } #ai-clear-btn:hover { background:#ff0000; }
+
+  #ai-undo-btn { background:#00994d; } #ai-undo-btn:hover { background:#006633; }
 
 }
 
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
 </style>
 
-<button id="ai-chat-toggle">💬</button>
+<button id="ai-chat-toggle">💬<div id="ai-unread-badge">1</div></button>
 
 <div id="ai-chat-box">
 
-  <div id="ai-chat-header">
-
-    InvestFunds Support
-
-    <span>Online 💡</span>
-
-  </div>
+  <div id="ai-chat-header">InvestFunds Support <span>Online 💡</span></div>
 
   <div id="ai-chat-messages"></div>
 
@@ -903,6 +837,10 @@ setInterval(()=>{
     <input type="text" id="ai-user-input" placeholder="Type a message..." />
 
     <button id="ai-send-btn">➤</button>
+
+    <button id="ai-clear-btn" title="Clear Chat">🗑️</button>
+
+    <button id="ai-undo-btn" title="Undo Clear">↩️</button>
 
   </div>
 
@@ -922,11 +860,57 @@ const send=document.getElementById("ai-send-btn");
 
 const typing=document.getElementById("typing-indicator");
 
-// Sound effect
+const badge=document.getElementById("ai-unread-badge");
+
+const clearBtn=document.getElementById("ai-clear-btn");
+
+const undoBtn=document.getElementById("ai-undo-btn");
 
 const sound=new Audio("https://cdn.pixabay.com/download/audio/2022/03/15/audio_34a2b8a2e2.mp3?filename=notification-3-102455.mp3");
 
-toggle.onclick=()=>box.style.display=box.style.display==="flex"?"none":"flex";
+let unreadCount=0,idleTimer,isDragging=false,offsetX,offsetY,autoGreeted=false,lastCleared=null;
+
+window.addEventListener("load",()=>{
+
+  const utter=new SpeechSynthesisUtterance("Hello! Welcome to InvestFunds Support.");
+
+  utter.pitch=1; utter.rate=1; utter.lang="en-US";
+
+  speechSynthesis.speak(utter);
+
+  loadMessages();
+
+});
+
+toggle.onclick=()=>{
+
+  box.style.display=box.style.display==="flex"?"none":"flex";
+
+  if(box.style.display==="flex"){ 
+
+    unreadCount=0; badge.style.display="none"; 
+
+    if(!autoGreeted){
+
+      setTimeout(()=>{ addMessage("👋 Welcome! Feel free to ask about our investment plans, withdrawals, or support — I’m here to help.","bot-msg"); autoGreeted=true; },600);
+
+    }
+
+  }
+
+};
+
+function resetIdleTimer(){ toggle.style.opacity="1"; clearTimeout(idleTimer); idleTimer=setTimeout(()=>{ toggle.style.opacity="0.5"; },10000); }
+
+document.addEventListener("mousemove",resetIdleTimer);
+
+document.addEventListener("touchmove",resetIdleTimer);
+
+resetIdleTimer();
+
+function saveMessages(){ localStorage.setItem("investfunds_chat",messages.innerHTML); }
+
+function loadMessages(){ const saved=localStorage.getItem("investfunds_chat"); if(saved){ messages.innerHTML=saved; messages.scrollTop=messages.scrollHeight; } }
 
 function addMessage(text,cls){
 
@@ -934,97 +918,121 @@ function addMessage(text,cls){
 
   div.className="ai-msg "+cls;
 
-  div.textContent=text;
+  div.innerHTML=text;
 
   messages.appendChild(div);
 
   messages.scrollTop=messages.scrollHeight;
 
-  if(cls==="bot-msg") sound.play().catch(()=>{});
+  saveMessages();
+
+  if(cls==="bot-msg"){ sound.play().catch(()=>{}); if(box.style.display==="none"){ unreadCount++; badge.textContent=unreadCount>9?"9+":unreadCount; badge.style.display="flex"; } }
 
 }
 
 function botReply(user){
 
-  const msg=user.toLowerCase();
+  const msg=user.toLowerCase(); let reply=null;
 
-  let reply="I'm here to assist with any InvestFunds inquiries.";
+  if(msg.includes("hello")||msg.includes("hi")) reply="Hello 👋 Welcome to InvestFunds! How can I help you today?";
 
-  if(msg.includes("hello")||msg.includes("hi"))
+  else if(msg.includes("invest")) reply="To invest, log in to your dashboard and choose a plan that suits you.";
 
-    reply="Hello 👋 Welcome to InvestFunds! How can I help you today?";
+  else if(msg.includes("withdraw")) reply="Withdrawals are processed within 24 hours after approval.";
 
-  else if(msg.includes("invest"))
+  else if(msg.includes("register")||msg.includes("signup")) reply="Visit the Register page, fill your details, and verify your account.";
 
-    reply="To invest, log in to your dashboard and choose a plan that suits you.";
+  else if(msg.includes("deposit")) reply="You can make deposits through your dashboard using supported payment methods.";
 
-  else if(msg.includes("withdraw"))
+  else if(msg.includes("legit")||msg.includes("real")) reply="InvestFunds is a trusted platform focused on transparency and reliability ✅";
 
-    reply="Withdrawals are processed within 24 hours after approval.";
+  else if(msg.includes("plan")) reply="We offer flexible investment plans for beginners and professionals. Check 'Our Plans' on the site.";
 
-  else if(msg.includes("register")||msg.includes("signup"))
+  else if(msg.includes("support")||msg.includes("help")) reply="You can reach support anytime through this chat or our contact email 📩";
 
-    reply="Visit the Register page, fill your details, and verify your account.";
+  else if(msg.includes("thank")) reply="You're welcome! 😊 We're always here to assist you.";
 
-  else if(msg.includes("deposit"))
+  else if(msg.includes("problem")||msg.includes("error")) reply="Please describe the issue in detail so we can help you better.";
 
-    reply="You can make deposits through your dashboard using supported payment methods.";
+  if(!reply){
 
-  else if(msg.includes("legit")||msg.includes("real"))
+    const fallbacks=[
 
-    reply="InvestFunds is a trusted platform focused on transparency and reliability ✅";
+      "✨ Hmm 🤔 I'm not fully sure about that. Please contact our manager directly for quick help 👉 <a href='https://wa.me/9779829900405' target='_blank' style='color:#0088cc;text-decoration:none;font-weight:bold;'>Chat on WhatsApp</a>",
 
-  else if(msg.includes("plan"))
+      "💡 I may not have that info right now, but our support manager can assist instantly on WhatsApp 👉 <a href='https://wa.me/9779829900405' target='_blank' style='color:#0088cc;text-decoration:none;font-weight:bold;'>Message Admin</a>"
 
-    reply="We offer flexible investment plans for beginners and professionals. Check 'Our Plans' on the site.";
+    ];
 
-  else if(msg.includes("support")||msg.includes("help"))
+    reply=fallbacks[Math.floor(Math.random()*fallbacks.length)];
 
-    reply="You can reach support anytime through this chat or our contact email 📩";
-
-  else if(msg.includes("thank"))
-
-    reply="You're welcome! 😊 We're always here to assist you.";
-
-  else if(msg.includes("problem")||msg.includes("error"))
-
-    reply="Please describe the issue in detail so we can help you better.";
+  }
 
   typing.style.display="block";
 
-  setTimeout(()=>{
-
-    typing.style.display="none";
-
-    addMessage(reply,"bot-msg");
-
-  },1000+Math.random()*1000);
+  setTimeout(()=>{ typing.style.display="none"; addMessage(reply,"bot-msg"); },1000+Math.random()*1000);
 
 }
 
-send.onclick=()=>{
+send.onclick=()=>{ const val=input.value.trim(); if(!val) return; addMessage(val,"user-msg"); input.value=""; setTimeout(()=>botReply(val),600); };
 
-  const val=input.value.trim();
+input.addEventListener("keypress",e=>{ if(e.key==="Enter") send.click(); });
 
-  if(!val) return;
+// Draggable icon
 
-  addMessage(val,"user-msg");
+toggle.addEventListener("mousedown",e=>{ isDragging=true; offsetX=e.clientX-toggle.offsetLeft; offsetY=e.clientY-toggle.offsetTop; toggle.style.transition="none"; });
 
-  input.value="";
+document.addEventListener("mousemove",e=>{ if(isDragging){ let x=e.clientX-offsetX; let y=e.clientY-offsetY; toggle.style.left=x+"px"; toggle.style.top=y+"px"; toggle.style.right="auto"; toggle.style.bottom="auto"; }});
 
-  setTimeout(()=>botReply(val),600);
+document.addEventListener("mouseup",()=>{ isDragging=false; toggle.style.transition="transform .2s, box-shadow .2s, opacity .3s"; });
+
+// Clear & Undo Chat with Fade
+
+clearBtn.onclick=()=>{
+
+  if(messages.innerHTML.trim()==="") return;
+
+  lastCleared = messages.innerHTML;
+
+  const msgNodes = Array.from(messages.children);
+
+  msgNodes.forEach(node => { node.style.opacity=0; });
+
+  setTimeout(()=>{
+
+    messages.innerHTML="";
+
+    saveMessages();
+
+    undoBtn.style.display="inline-block";
+
+  },300);
 
 };
 
-input.addEventListener("keypress",e=>{
+undoBtn.onclick=()=>{
 
-  if(e.key==="Enter") send.click();
+  if(lastCleared){
 
-});
+    messages.innerHTML=lastCleared;
+
+    Array.from(messages.children).forEach(node=>{ node.style.opacity=0; setTimeout(()=>node.style.opacity=1,50); });
+
+    messages.scrollTop=messages.scrollHeight;
+
+    saveMessages();
+
+    lastCleared=null;
+
+    undoBtn.style.display="none";
+
+  }
+
+};
 
 </script>
 
-<!-- ====== /AI Chat Support (Upgraded) ====== -->
+<!-- ====== /AI Chat Support (Smart Memory + WhatsApp Fallback + Auto Greeting + Clear + Undo + Fade) ====== -->
 
 </body>
 
